@@ -1,0 +1,8 @@
+{
+  "name": "Direitos e Dinheiro do Trabalhador Industrial",
+  "description": "Descubra se existe dinheiro que pode estar faltando no seu holerite. Entenda insalubridade, periculosidade, horas extras, FGTS, PPP, LTCAT e segurança industrial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
