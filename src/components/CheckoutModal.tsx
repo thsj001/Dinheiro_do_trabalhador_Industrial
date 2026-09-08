@@ -11,6 +11,7 @@ import {
   Check,
   Zap,
 } from 'lucide-react';
+import { CHECKOUT_PRO_URL, CHECKOUT_BASIC_URL } from './ProductDetailsModal';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -37,11 +38,13 @@ export default function CheckoutModal({
 
   if (!isOpen) return null;
 
-  const currentPrice = selectedPlan === 'pro' ? 'R$ 47,00' : 'R$ 19,90';
+  const currentPrice = selectedPlan === 'pro' ? 'R$ 27,90' : 'R$ 10,00';
   const oldPrice = selectedPlan === 'pro' ? 'R$ 197,00' : 'R$ 67,00';
 
   const dummyPixCode =
-    '00020126580014br.gov.bcb.pix0136direitos-trabalhador-industrial-47005204000053039865802BR5925DIREITOS TRABALHADOR6009SAO PAULO62070503***6304E8A9';
+    selectedPlan === 'pro'
+      ? '00020126580014br.gov.bcb.pix0136direitos-trabalhador-industrial-27905204000053039865802BR5925DIREITOS TRABALHADOR6009SAO PAULO62070503***6304E8A9'
+      : '00020126580014br.gov.bcb.pix0136direitos-trabalhador-industrial-10005204000053039865802BR5925DIREITOS TRABALHADOR6009SAO PAULO62070503***6304E8A9';
 
   const handleCopyPix = () => {
     navigator.clipboard?.writeText(dummyPixCode);
@@ -51,6 +54,8 @@ export default function CheckoutModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const targetUrl = selectedPlan === 'pro' ? CHECKOUT_PRO_URL : CHECKOUT_BASIC_URL;
+    window.open(targetUrl, '_blank', 'noopener,noreferrer') || (window.location.href = targetUrl);
     setIsOrderComplete(true);
   };
 
@@ -98,7 +103,7 @@ export default function CheckoutModal({
                   <p className="text-[11px] text-slate-500 mb-1">15 Módulos + 10 Bônus</p>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-xs text-slate-400 line-through">R$ 197</span>
-                    <span className="text-base font-black text-[#002699]">R$ 47,00</span>
+                    <span className="text-base font-black text-[#002699]">R$ 27,90</span>
                   </div>
                 </button>
 
@@ -118,10 +123,27 @@ export default function CheckoutModal({
                   <p className="text-[11px] text-slate-500 mb-1">Fundamentos em PDF</p>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-xs text-slate-400 line-through">R$ 67</span>
-                    <span className="text-base font-black text-slate-800">R$ 19,90</span>
+                    <span className="text-base font-black text-slate-800">R$ 10,00</span>
                   </div>
                 </button>
               </div>
+
+              {/* Sugestão de Upgrade se o usuário selecionar o Básico */}
+              {selectedPlan === 'basic' && (
+                <div className="mb-4 p-3 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-center justify-between gap-3 animate-in fade-in">
+                  <div className="text-xs text-amber-950 leading-snug">
+                    <strong className="text-[#002699] font-black block">💡 Sugestão Recomendada:</strong>
+                    Por apenas <strong className="text-emerald-700">R$ 17,90 a mais</strong> você leva o Pacote Completo (com as calculadoras em Excel, modelos de PPP e 10 bônus).
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onSelectPlan('pro')}
+                    className="bg-amber-400 hover:bg-amber-500 text-blue-950 font-black text-[11px] py-1.5 px-3 rounded-lg shrink-0 cursor-pointer shadow-xs"
+                  >
+                    Mudar p/ R$ 27,90
+                  </button>
+                </div>
+              )}
 
               {/* Payment Methods */}
               <div className="flex gap-2 mb-4">
@@ -249,15 +271,17 @@ export default function CheckoutModal({
                   </div>
                 )}
 
-                <button
-                  type="submit"
+                <a
+                  href={selectedPlan === 'pro' ? CHECKOUT_PRO_URL : CHECKOUT_BASIC_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full mt-3 bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 font-black text-base py-3.5 px-6 rounded-xl shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer border border-amber-300"
                 >
                   <Lock className="w-4 h-4" />
                   <span>
-                    CONCLUIR PAGAMENTO ({currentPrice})
+                    CONCLUIR NO CHECKOUT OFICIAL ({currentPrice})
                   </span>
-                </button>
+                </a>
               </form>
             </>
           ) : (

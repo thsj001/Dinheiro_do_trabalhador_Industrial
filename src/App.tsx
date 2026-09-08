@@ -28,10 +28,13 @@ import {
   Clock,
   Eye,
   Info,
+  Users,
+  Factory,
+  Quote,
 } from 'lucide-react';
 
 import mockupImg from './assets/images/kit_mockup_direitos_1788400302787.jpg';
-import expertImg from './assets/images/especialista_brasileiro_1788400313830.jpg';
+import expertImg from './assets/images/instrutor_brasileiro_1788894586198.jpg';
 
 import {
   targetAudience,
@@ -46,10 +49,15 @@ import {
 
 import InteractiveSimulator from './components/InteractiveSimulator';
 import CheckoutModal from './components/CheckoutModal';
+import ProductDetailsModal, {
+  CHECKOUT_PRO_URL,
+  CHECKOUT_BASIC_URL,
+} from './components/ProductDetailsModal';
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'pro' | 'basic'>('pro');
   const [timeLeft, setTimeLeft] = useState(630); // 10:30 countdown timer
 
@@ -72,12 +80,17 @@ export default function App() {
     setIsCheckoutOpen(true);
   };
 
+  const handleOpenProductDetails = () => {
+    setSelectedPlan('pro');
+    setIsProductDetailsOpen(true);
+  };
+
   const scrollToPricing = () => {
     const el = document.getElementById('oferta');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     } else {
-      handleOpenCheckout('pro');
+      handleOpenProductDetails();
     }
   };
 
@@ -166,7 +179,7 @@ export default function App() {
           {/* CTA Hero Button */}
           <div className="mt-8">
             <button
-              onClick={() => handleOpenCheckout('pro')}
+              onClick={() => handleOpenProductDetails()}
               className="w-full sm:w-auto min-w-[320px] sm:min-w-[420px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-lg sm:text-xl font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/30 active:scale-[0.98] transition-all transform inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
             >
               <span>QUERO DESCOBRIR MEUS DIREITOS</span>
@@ -300,7 +313,7 @@ export default function App() {
 
           <div className="text-center">
             <button
-              onClick={() => handleOpenCheckout('pro')}
+              onClick={() => handleOpenProductDetails()}
               className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base sm:text-lg font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/25 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
             >
               <span>QUERO APRENDER MEUS DIREITOS</span>
@@ -457,7 +470,7 @@ export default function App() {
 
           <div className="text-center">
             <button
-              onClick={() => handleOpenCheckout('pro')}
+              onClick={() => handleOpenProductDetails()}
               className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base sm:text-lg font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
             >
               <span>QUERO ACESSAR TODOS OS MATERIAIS</span>
@@ -515,7 +528,7 @@ export default function App() {
 
         <div className="text-center">
           <button
-            onClick={() => handleOpenCheckout('pro')}
+            onClick={() => handleOpenProductDetails()}
             className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base sm:text-lg font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
           >
             <span>QUERO RECEBER OS 10 BÔNUS</span>
@@ -663,7 +676,7 @@ export default function App() {
 
             <div className="text-center">
               <button
-                onClick={() => handleOpenCheckout('pro')}
+                onClick={() => handleOpenProductDetails()}
                 className="w-full sm:w-auto min-w-[300px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
               >
                 <span>QUERO APRENDER A CONFERIR</span>
@@ -760,7 +773,7 @@ export default function App() {
           </div>
 
           {/* Interactive simulator component */}
-          <InteractiveSimulator onCtaClick={() => handleOpenCheckout('pro')} />
+          <InteractiveSimulator onCtaClick={() => handleOpenProductDetails()} />
 
           <p className="text-center text-xs text-slate-500 max-w-lg mx-auto mt-4">
             *Não é cálculo jurídico e não representa garantia de recebimento de qualquer valor.
@@ -795,7 +808,7 @@ export default function App() {
           </div>
 
           <button
-            onClick={() => handleOpenCheckout('pro')}
+            onClick={() => handleOpenProductDetails()}
             className="w-full sm:w-auto bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
           >
             <span>QUERO GARANTIR MEU CERTIFICADO</span>
@@ -804,72 +817,205 @@ export default function App() {
         </div>
       </section>
 
-      {/* ⚪ SECTION: CONHEÇA O MÉTODO & SEU ESPECIALISTA BRASILEIRO */}
-      <section className="py-16 sm:py-20 px-4 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="bg-blue-100 text-[#002699] text-xs sm:text-sm font-black px-4 py-1.5 rounded-full tracking-wider uppercase inline-block mb-4">
-            👨‍🏭 CONHEÇA O MÉTODO
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-[#002266] mb-3 tracking-tight">
-            Conhecimento para quem vive a realidade da indústria
-          </h2>
-          <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto mb-8">
-            O conteúdo foi estruturado pensando na rotina de trabalhadores que lidam diariamente com:
-          </p>
+      {/* ⚪ SECTION: CONHEÇA O MÉTODO & SEU ESPECIALISTA BRASILEIRO (PROVA SOCIAL EXPANDIDA) */}
+      <section className="py-16 sm:py-24 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-5xl mx-auto">
+          
+          {/* Header Title */}
+          <div className="text-center mb-10">
+            <span className="bg-blue-100 text-[#002699] text-xs sm:text-sm font-black px-4 py-1.5 rounded-full tracking-wider uppercase inline-block mb-3 border border-blue-200">
+              🇧🇷 SEU INSTRUTOR & ESPECIALISTA BRASILEIRO
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#002266] mb-3 tracking-tight">
+              Conhecimento prático de quem viveu o chão de fábrica por 16 anos
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto">
+              Desenvolvido por quem conhece na pele o barulho, os turnos pesados, as pressões e a realidade dos operários da indústria brasileira.
+            </p>
+          </div>
 
-          {/* Reality Badges */}
-          <div className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto mb-12">
+          {/* Main Instructor Card */}
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border-2 border-slate-200/90 shadow-xl mb-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 relative z-10">
+              {/* Photo & Identity Frame */}
+              <div className="flex flex-col items-center shrink-0">
+                <div className="w-52 h-52 sm:w-60 sm:h-60 rounded-2xl overflow-hidden shadow-xl border-4 border-amber-400 relative bg-blue-950">
+                  <img
+                    src={expertImg}
+                    alt="Carlos Eduardo Moreira, especialista brasileiro em segurança do trabalho e direitos industriais"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-2 left-2 right-2 bg-blue-950/90 backdrop-blur-xs text-white text-[11px] font-bold py-1 px-2.5 rounded-lg text-center flex items-center justify-center gap-1.5 border border-blue-800">
+                    <span className="text-amber-400 text-xs">🇧🇷</span>
+                    <span>Especialista Brasileiro</span>
+                  </div>
+                </div>
+
+                {/* Rating Badge below photo */}
+                <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-1.5 flex items-center gap-2 shadow-xs">
+                  <div className="flex text-amber-500">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-xs font-black text-amber-950">4.9 / 5.0</span>
+                  <span className="text-[10px] text-slate-500 font-semibold">(3.240+ avaliações)</span>
+                </div>
+              </div>
+
+              {/* Bio & Practical Authority */}
+              <div className="text-center lg:text-left flex-1">
+                <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase text-[#002699] tracking-wider mb-1 bg-blue-50 px-3 py-1 rounded-md">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-700" />
+                  <span>Instrutor & Consultor Industrial</span>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-black text-[#002266] mb-2 leading-tight">
+                  Carlos Eduardo Moreira
+                </h3>
+
+                <p className="text-sm font-bold text-slate-700 mb-4 leading-snug">
+                  Técnico em Segurança do Trabalho e Consultor de Rotinas Industriais com mais de 16 anos atuando em indústrias automotivas, metalúrgicas e químicas.
+                </p>
+
+                <p className="text-slate-600 text-sm leading-relaxed mb-5">
+                  “Após passar mais de uma década e meia dentro de fábricas e estamparías em polos industriais de São Paulo, Minas Gerais e Sul do país, vi de perto como é dura a rotina do trabalhador. Mas o que mais me incomodava era ver operários perderem adicionais de insalubridade, FGTS e tempo de aposentadoria especial por pura falta de informação clara. Meu objetivo com esta formação foi traduzir as leis e normas em um método visual, simples e direto que qualquer trabalhador consiga aplicar no mesmo dia.”
+                </p>
+
+                {/* Practical Credentials Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-slate-100">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <Factory className="w-4 h-4 text-blue-700 shrink-0" />
+                    <span>16+ Anos de Chão de Fábrica Real</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <HardHat className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Especialista em NRs (NR-15, NR-16 e NR-12)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <FileCheck2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span>Laudos de Insalubridade, LTCAT e PPP</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <Award className="w-4 h-4 text-purple-700 shrink-0" />
+                    <span>Didática 100% Direta (Sem Juridiquês)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof Numbers / Impact Metrics */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-12">
             {[
-              'Máquinas',
-              'Equipamentos',
-              'Riscos',
-              'EPIs',
-              'Holerites',
-              'Documentação',
-              'Procedimentos',
-              'Direitos trabalhistas',
-            ].map((tag, idx) => (
-              <span
+              { number: '+14.800', label: 'Trabalhadores Orientados', desc: 'Em indústrias de todo o Brasil' },
+              { number: '16 Anos', label: 'Vivência no Chão de Fábrica', desc: 'Experiência prática de rotina' },
+              { number: '98,8%', label: 'Índice de Aprovação', desc: 'Avaliações positivas dos alunos' },
+              { number: '27 Estados', label: 'Alcance Nacional', desc: 'Trabalhadores capacitados' },
+            ].map((stat, idx) => (
+              <div
                 key={idx}
-                className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-800 shadow-sm"
+                className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm hover:border-amber-400 transition-colors"
               >
-                {tag}
-              </span>
+                <div className="text-2xl sm:text-3xl font-black text-[#002699] leading-tight">
+                  {stat.number}
+                </div>
+                <div className="text-xs font-bold text-slate-800 mt-1">
+                  {stat.label}
+                </div>
+                <div className="text-[11px] text-slate-500 mt-0.5">
+                  {stat.desc}
+                </div>
+              </div>
             ))}
           </div>
 
-          {/* Expert Portrait and Bio */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-lg text-center sm:text-left max-w-3xl mx-auto mb-10 flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-44 h-44 rounded-2xl overflow-hidden shadow-md border-2 border-amber-400 shrink-0">
-              <img
-                src={expertImg}
-                alt="Carlos Eduardo Moreira, especialista em segurança e direitos industriais"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <span className="text-xs font-black uppercase text-[#002699] tracking-wider block mb-1">
-                SEU INSTRUTOR & ESPECIALISTA
+          {/* Dedicated Worker Testimonials About Instructor Carlos */}
+          <div className="bg-gradient-to-b from-blue-950 to-[#002266] rounded-3xl p-6 sm:p-8 text-white mb-10 shadow-xl border border-blue-900">
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <span className="text-amber-400 text-xs font-black uppercase tracking-wider bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30 inline-block mb-2">
+                DEPOIMENTOS SOBRE O INSTRUTOR
               </span>
-              <h3 className="text-xl sm:text-2xl font-black text-[#002266] mb-2">
-                Carlos Eduardo Moreira
+              <h3 className="text-xl sm:text-2xl font-black text-white">
+                O que os trabalhadores dizem sobre as orientações do Carlos Eduardo:
               </h3>
-              <p className="text-xs text-blue-900 font-semibold mb-3">
-                Especialista em Segurança do Trabalho e Consultor de Rotinas Industriais com mais de 16 anos no setor
-              </p>
-              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                Atuou diretamente em indústrias químicas, metalúrgicas e automotivas, participando de inspeções de chão de fábrica, elaboração de laudos de insalubridade e emissão de documentações previdenciárias como PPP e LTCAT. A proposta é transformar assuntos que parecem complicados em materiais simples, visuais e fáceis de consultar para qualquer trabalhador.
-              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  quote:
+                    'O Carlos fala exatamente a língua de quem sua a camisa na fábrica. Ele não enrola nem fica usando palavras difíceis de advogado. Com o checklist dele, descobri que meu adicional de insalubridade de 20% vinha sendo calculado sobre base errada.',
+                  name: 'Valdir Santoro',
+                  age: '44 anos',
+                  role: 'Operador de Prensa Hidráulica',
+                  city: 'Volta Redonda / RJ',
+                },
+                {
+                  quote:
+                    'Dá pra ver na hora que o Carlos já pisou na fábrica com bota de bico de aço. Ele sabe onde o bicho pega com laudo e PPP. O modelo de requerimento dele me ajudou a pedir a retificação da minha função na empresa anterior sem nenhum estresse.',
+                  name: 'Claudinei Ramos',
+                  age: '48 anos',
+                  role: 'Soldador Industrial TIG/MIG',
+                  city: 'Paulínia / SP',
+                },
+                {
+                  quote:
+                    'Tinha medo de comprar e ser curso teórico inútil. O Carlos ensina a usar a planilha no celular, linha por linha do holerite. Valeu cada centavo dos R$ 27,90, recomendei para todos os colegas do meu turno na metalúrgica.',
+                  name: 'Adriano Bezerra',
+                  age: '39 anos',
+                  role: 'Mecânico de Manutenção',
+                  city: 'Joinville / SC',
+                },
+              ].map((t, idx) => (
+                <div
+                  key={idx}
+                  className="bg-blue-900/60 backdrop-blur-xs border border-blue-700/60 rounded-2xl p-5 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center gap-1 text-amber-400 mb-3">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-xs sm:text-sm text-blue-100 italic leading-relaxed mb-4">
+                      "{t.quote}"
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-blue-800/80">
+                    <p className="text-xs font-bold text-white leading-tight">
+                      {t.name}, {t.age}
+                    </p>
+                    <p className="text-[11px] text-amber-300 font-medium">
+                      {t.role}
+                    </p>
+                    <p className="text-[10px] text-blue-300">
+                      {t.city} • <span className="text-emerald-400 font-semibold">Aluno Verificado</span>
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <button
-            onClick={() => handleOpenCheckout('pro')}
-            className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
-          >
-            <span>QUERO ME CAPACITAR COM O MÉTODO</span>
-            <ArrowRight className="w-5 h-5 stroke-[2.5]" />
-          </button>
+          {/* CTA under expanded social proof */}
+          <div className="text-center">
+            <button
+              onClick={() => handleOpenProductDetails()}
+              className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base sm:text-lg font-black py-4 px-8 rounded-full shadow-lg shadow-amber-400/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
+            >
+              <span>QUERO ME CAPACITAR COM O MÉTODO POR R$ 27,90</span>
+              <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+            </button>
+            <p className="text-xs text-slate-500 mt-2">
+              Acesso vitalício imediato com garantia incondicional de 7 dias
+            </p>
+          </div>
+
         </div>
       </section>
 
@@ -995,7 +1141,7 @@ export default function App() {
           </div>
 
           <button
-            onClick={() => handleOpenCheckout('pro')}
+            onClick={() => handleOpenProductDetails()}
             className="w-full sm:w-auto bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-xs sm:text-sm font-black py-3 px-6 rounded-full active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer border border-amber-300 shrink-0"
           >
             <span>QUERO CONFERIR MEU HOLERITE</span>
@@ -1113,14 +1259,22 @@ export default function App() {
                   De R$ 67,00
                 </span>
                 <div className="text-2xl sm:text-3xl font-black text-slate-900 mb-6">
-                  POR APENAS <span className="text-[#002699]">R$ 19,90</span>
+                  POR APENAS <span className="text-[#002699]">R$ 10,00</span>
                 </div>
                 <button
-                  onClick={() => handleOpenCheckout('basic')}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm sm:text-base font-bold py-3.5 px-6 rounded-full transition-all cursor-pointer"
+                  onClick={() => handleOpenProductDetails()}
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm sm:text-base font-bold py-3.5 px-6 rounded-full transition-all cursor-pointer shadow-md"
                 >
                   QUERO O PLANO BÁSICO
                 </button>
+                <a
+                  href={CHECKOUT_BASIC_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center mt-2.5 text-xs text-slate-500 hover:text-slate-900 underline"
+                >
+                  Ou ir direto para o checkout de R$ 10,00 →
+                </a>
               </div>
             </div>
 
@@ -1173,15 +1327,17 @@ export default function App() {
                   De R$ 197,00
                 </span>
                 <div className="text-2xl sm:text-3xl font-black text-white mb-6">
-                  POR APENAS <span className="text-3xl sm:text-4xl text-[#ffbe00]">R$ 47,00</span>
+                  POR APENAS <span className="text-3xl sm:text-4xl text-[#ffbe00]">R$ 27,90</span>
                 </div>
-                <button
-                  onClick={() => handleOpenCheckout('pro')}
+                <a
+                  href={CHECKOUT_PRO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-base sm:text-lg font-black py-4 px-6 rounded-full shadow-lg shadow-black/40 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300"
                 >
                   <span>QUERO O PLANO PROFISSIONAL</span>
                   <ArrowRight className="w-5 h-5 stroke-[2.5]" />
-                </button>
+                </a>
               </div>
             </div>
 
@@ -1270,11 +1426,11 @@ export default function App() {
           </p>
 
           <p className="text-amber-300 font-extrabold text-base sm:text-lg mb-8">
-            Tenha acesso à biblioteca completa + 10 bônus por apenas R$ 47,00.
+            Tenha acesso à biblioteca completa + 10 bônus por apenas R$ 27,90.
           </p>
 
           <button
-            onClick={() => handleOpenCheckout('pro')}
+            onClick={() => handleOpenProductDetails()}
             className="w-full sm:w-auto min-w-[320px] bg-[#ffbe00] hover:bg-[#ffcd29] text-blue-950 text-lg sm:text-xl font-black py-4 px-10 rounded-full shadow-2xl shadow-black/40 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300 mb-4"
           >
             <span>QUERO DESCOBRIR MEUS DIREITOS</span>
@@ -1317,6 +1473,22 @@ export default function App() {
           </p>
         </div>
       </footer>
+
+      {/* 📦 DETALHES DO PRODUTO POPUP (R$ 27,90 SUGERIDO NO LUGAR DE R$ 10,00) */}
+      <ProductDetailsModal
+        isOpen={isProductDetailsOpen}
+        onClose={() => setIsProductDetailsOpen(false)}
+        checkoutProUrl={CHECKOUT_PRO_URL}
+        checkoutBasicUrl={CHECKOUT_BASIC_URL}
+        onProceedToCheckout={() => {
+          setIsProductDetailsOpen(false);
+          window.open(CHECKOUT_PRO_URL, '_blank', 'noopener,noreferrer') || (window.location.href = CHECKOUT_PRO_URL);
+        }}
+        onProceedBasic={() => {
+          setIsProductDetailsOpen(false);
+          window.open(CHECKOUT_BASIC_URL, '_blank', 'noopener,noreferrer') || (window.location.href = CHECKOUT_BASIC_URL);
+        }}
+      />
 
       {/* 💳 CHECKOUT MODAL */}
       <CheckoutModal
